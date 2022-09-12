@@ -11,46 +11,74 @@ by request path.
 To use the library just add:
 
 ```toml
-hyper = "^0.12"
-hyper-routing = "^0.5"
+hyper-routing = "0.6"
+hyper = { version = "0.14", features = ["full"] }
+tokio = { version = "1", features = ["full"] }
+futures-util = "0.3"
+pretty_env_logger = "0.4"
 ```
 
 to your dependencies.
 
 ```rust
-extern crate hyper;
-extern crate hyper_routing;
+#![deny(warnings)]
 
+use std::task::{Context, Poll};
+
+use futures_util::future;
+use hyper::service::Service;
+use hyper::{Body, Method, Request, Response, Server};
 use hyper::header::{CONTENT_LENGTH, CONTENT_TYPE};
-use hyper::{Request, Response, Body, Method};
-use hyper::server::Server;
-use hyper::rt::Future;
 use hyper_routing::{Route, RouterBuilder, RouterService};
 
-fn basic_handler(_: Request<Body>) -> Response<Body> {
-    let body = "Hello World";
-    Response::builder()
-        .header(CONTENT_LENGTH, body.len() as u64)
-        .header(CONTENT_TYPE, "text/plain")
-        .body(Body::from(body))
-        .expect("Failed to construct the response")
+pub struct MakeSvc;
+
+impl<T> Service<T> for MakeSvc {
+  type Response = RouterService;
+  type Error = std::io::Error;
+  type Future = future::Ready<Result<Self::Response, Self::Error>>;
+
+  fn poll_ready(&mut self, _cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+    Ok(()).into()
+  }
+
+  fn call(&mut self, _: T) -> Self::Future {
+    future::ok(router_service())
+  }
 }
 
-fn router_service() -> Result<RouterService, std::io::Error> {
-    let router = RouterBuilder::new()
-        .add(Route::get("/greet").using(basic_handler))
-        .build();
-
-    Ok(RouterService::new(router))
+fn request_handler(_: Request<Body>) -> Response<Body> {
+  let body = "Hello World";
+  Response::builder()
+          .header(CONTENT_LENGTH, body.len() as u64)
+          .header(CONTENT_TYPE, "text/plain")
+          .body(Body::from(body))
+          .expect("Failed to construct the response")
 }
 
-fn main() {
-    let addr = "0.0.0.0:8080".parse().unwrap();
-    let server = Server::bind(&addr)
-        .serve(router_service)
-        .map_err(|e| eprintln!("server error: {}", e));
+fn router_service() -> RouterService {
+  let router = RouterBuilder::new()
+          .add(Route::get("/hello").using(request_handler))
+          .add(Route::from(Method::PATCH, "/world").using(request_handler))
+          .build();
 
-    hyper::rt::run(server)
+  RouterService::new(router)
+}
+
+#[tokio::main]
+async fn main() {
+  pretty_env_logger::init();
+
+  // We'll bind to 127.0.0.1:3000
+  let addr = "0.0.0.0:3000".parse().unwrap();
+
+  let server =
+          Server::bind(&addr).serve(MakeSvc);
+
+  // Run this server for... forever!
+  if let Err(e) = server.await {
+    eprintln!("server error: {}", e);
+  }
 }
 ```
 
