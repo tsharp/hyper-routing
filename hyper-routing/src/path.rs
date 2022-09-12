@@ -14,7 +14,7 @@ impl Path {
     /// write something like this:
     ///
     /// ```no_run
-    /// use hyper_router::Path;
+    /// use hyper_routing::Path;
     /// Path::new(r"/person/\d+");
     /// ```
     ///
