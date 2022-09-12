@@ -1,6 +1,6 @@
 [package]
 name = "hyper-routing"
-version = "0.5.0"
+version = "0.6.0"
 authors = ["Travis Sharp <furiousscissors@gmail.com>", "Marcin Radoszewski <moriturius@gmail.com>", "Alexander Mescheryakov <freecoder.xx@gmail.com>"]
 description = "Simple routing middleware for Hyper http library."
 repository = "https://github.com/tsharp/hyper-routing"
