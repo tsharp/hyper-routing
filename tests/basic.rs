@@ -1,8 +1,8 @@
 extern crate hyper;
-extern crate hyper_router;
+extern crate hyper_routing;
 
 use hyper::{Body, Method, Request, Response, Uri};
-use hyper_router::*;
+use hyper_routing::*;
 use std::str::FromStr;
 
 #[test]

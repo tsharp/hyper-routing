@@ -1,6 +1,6 @@
-#![doc(html_root_url = "https://marad.github.io/hyper-router/doc/hyper_router")]
+#![doc(html_root_url = "https://marad.github.io/hyper-routing/doc/hyper_routing")]
 
-//! # Hyper Router
+//! # Hyper Routing
 //!
 //! This cargo is a small extension to the great Hyper HTTP library. It basically is
 //! adds the ability to define routes to request handlers and then query for the handlers
@@ -12,20 +12,20 @@
 //!
 //! ```text
 //! hyper = "^0.12"
-//! hyper-router = "^0.5"
+//! hyper-routing = "^0.5"
 //! ```
 //!
 //! to your dependencies.
 //!
 //! ```no_run
 //! extern crate hyper;
-//! extern crate hyper_router;
+//! extern crate hyper_routing;
 //!
 //! use hyper::header::{CONTENT_LENGTH, CONTENT_TYPE};
 //! use hyper::{Request, Response, Body, Method};
 //! use hyper::server::Server;
 //! use hyper::rt::Future;
-//! use hyper_router::{Route, RouterBuilder, RouterService};
+//! use hyper_routing::{Route, RouterBuilder, RouterService};
 //!
 //! fn basic_handler(_: Request<Body>) -> Response<Body> {
 //!     let body = "Hello World";

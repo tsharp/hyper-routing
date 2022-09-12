@@ -1,10 +1,10 @@
-# Hyper Router [![Build Status](https://travis-ci.com/marad/hyper-router.svg?branch=master)](https://travis-ci.com/marad/hyper-router)
+# Hyper Router [![Build Status](https://travis-ci.com/tsharp/hyper-routing.svg?branch=master)](https://travis-ci.com/tsharp/hyper-routing)
 
 This cargo is a small extension to the great Hyper HTTP library. It basically is
 adds the ability to define routes to request handlers and then query for the handlers
 by request path.
 
-[API Documentation](https://docs.rs/hyper-router/latest/hyper_router/)
+[API Documentation](https://docs.rs/hyper-routing/latest/hyper_routing/)
 
 ## Usage
 
@@ -12,20 +12,20 @@ To use the library just add:
 
 ```toml
 hyper = "^0.12"
-hyper-router = "^0.5"
+hyper-routing = "^0.5"
 ```
 
 to your dependencies.
 
 ```rust
 extern crate hyper;
-extern crate hyper_router;
+extern crate hyper_routing;
 
 use hyper::header::{CONTENT_LENGTH, CONTENT_TYPE};
 use hyper::{Request, Response, Body, Method};
 use hyper::server::Server;
 use hyper::rt::Future;
-use hyper_router::{Route, RouterBuilder, RouterService};
+use hyper_routing::{Route, RouterBuilder, RouterService};
 
 fn basic_handler(_: Request<Body>) -> Response<Body> {
     let body = "Hello World";
@@ -60,14 +60,14 @@ will be called.
 
 ## Things to note
 
-* you can specify paths as regular expressions so you can match every path you please.
-* If you have request matching multiple paths the one that was first `add`ed will be chosen.
-* ~~This library is in an early stage of development so there may be breaking changes comming.~~ -
+- you can specify paths as regular expressions so you can match every path you please.
+- If you have request matching multiple paths the one that was first `add`ed will be chosen.
+- ~~This library is in an early stage of development so there may be breaking changes comming.~~ -
   it seems that the library is quite popular so I'm not going to do compatibility breaking changes.
 
 # Further Development
 
-* add the ability to distinguish requests by query parameters.
+- add the ability to distinguish requests by query parameters.
 
 # Waiting for your feedback
 
@@ -75,5 +75,4 @@ I've created this little tool to help myself learn Rust and to avoid using big f
 like Iron or rustful. I just want to keep things simple.
 
 Obviously I could make some errors or bad design choices so I'm waiting for your feedback!
-Please contact me at moriturius at GMail. You may also create an issue at [project's bug tracker](https://github.com/marad/hyper-router/issues).
-
+Please contact me at moriturius at GMail. You may also create an issue at [project's bug tracker](https://github.com/tsharp/hyper-routing/issues).
