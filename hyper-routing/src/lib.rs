@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://marad.github.io/hyper-routing/doc/hyper_routing")]
+#![doc(html_root_url = "https://tsharp.github.io/hyper-routing/doc/hyper_routing")]
 
 //! # Hyper Routing
 //!
@@ -73,12 +73,13 @@
 //! like Iron or rustful. I just want to keep things simple.
 //!
 //! Obviously I could make some errors or bad design choices so I'm waiting for your feedback!
-//! You may create an issue at [project's bug tracker](https://github.com/marad/hyper-router/issues).
+//! You may create an issue at [project's bug tracker](https://github.com/tsharp/hyper-routing/issues).
 
 extern crate futures;
 extern crate hyper;
 
-use futures::future::FutureResult;
+use std::task::{Context, Poll};
+use futures::future;
 use hyper::header::CONTENT_LENGTH;
 use hyper::service::Service;
 use hyper::{Body, Request, Response};
@@ -183,13 +184,16 @@ impl RouterService {
     }
 }
 
-impl Service for RouterService {
-    type ReqBody = Body;
-    type ResBody = Body;
+impl Service<Request<Body>> for RouterService {
+    type Response = Response<Body>;
     type Error = hyper::Error;
-    type Future = FutureResult<Response<Body>, hyper::Error>;
+    type Future = future::Ready<Result<Self::Response, Self::Error>>;
 
-    fn call(&mut self, request: Request<Self::ReqBody>) -> Self::Future {
+    fn poll_ready(&mut self, _cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+        Ok(()).into()
+    }
+
+    fn call(&mut self, request: Request<Body>) -> Self::Future {
         futures::future::ok(match self.router.find_handler(&request) {
             Ok(handler) => handler(request),
             Err(status_code) => (self.error_handler)(status_code),
