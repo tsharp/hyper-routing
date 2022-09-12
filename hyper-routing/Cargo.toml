@@ -1,6 +1,6 @@
 [package]
 name = "hyper-routing"
-version = "0.6.0"
+version = "0.6.1"
 authors = ["Travis Sharp <furiousscissors@gmail.com>", "Marcin Radoszewski <moriturius@gmail.com>", "Alexander Mescheryakov <freecoder.xx@gmail.com>"]
 description = "Simple routing middleware for Hyper http library."
 repository = "https://github.com/tsharp/hyper-routing"
@@ -8,10 +8,7 @@ keywords = ["hyper", "router", "routing", "middleware"]
 documentation = "https://docs.rs/hyper-routing/latest/hyper_routing/"
 license = "MIT"
 edition = "2021"
-
-#[[bin]]
-#name = "test-server"
-#path = "test-server/main.rs"
+readme = "../README.md"
 
 [lib]
 name = "hyper_routing"

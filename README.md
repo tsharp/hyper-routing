@@ -11,7 +11,7 @@ by request path.
 To use the library just add:
 
 ```toml
-hyper-routing = "0.6"
+hyper-routing = "0.6.1"
 hyper = { version = "0.14", features = ["full"] }
 tokio = { version = "1", features = ["full"] }
 futures-util = "0.3"
