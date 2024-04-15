@@ -75,14 +75,15 @@
 //! Obviously I could make some errors or bad design choices so I'm waiting for your feedback!
 //! You may create an issue at [project's bug tracker](https://github.com/tsharp/hyper-routing/issues).
 
-extern crate futures;
 extern crate hyper;
 
-use std::task::{Context, Poll};
-use futures::future;
+use std::future::Future;
+use std::pin::Pin;
+use http_body_util::Full;
+use hyper::body::Bytes;
 use hyper::header::CONTENT_LENGTH;
 use hyper::service::Service;
-use hyper::{Body, Request, Response};
+use hyper::{body::Incoming as IncomingBody, Request, Response};
 
 use hyper::Method;
 use hyper::StatusCode;
@@ -97,7 +98,7 @@ pub use self::path::Path;
 pub use self::route::Route;
 pub use self::route::RouteBuilder;
 
-pub type Handler = fn(Request<Body>) -> Response<Body>;
+pub type Handler = fn(Request<IncomingBody>) -> Result<Response<Full<Bytes>>, hyper::Error>;
 pub type HttpResult<T> = Result<T, StatusCode>;
 
 /// This is the one. The router.
@@ -113,7 +114,7 @@ impl Router {
     /// If the request does not match any route than default 404 handler is returned.
     /// If the request match some routes but http method does not match (used GET but routes are
     /// defined for POST) than default method not supported handler is returned.
-    pub fn find_handler_with_defaults(&self, request: &Request<Body>) -> Handler {
+    pub fn find_handler_with_defaults(&self, request: &Request<IncomingBody>) -> Handler {
         let matching_routes = self.find_matching_routes(request.uri().path());
         match matching_routes.len() {
             x if x == 0 => handlers::default_404_handler,
@@ -128,7 +129,7 @@ impl Router {
     /// It returns handler if it's found or `StatusCode` for error.
     /// This method may return `NotFound`, `MethodNotAllowed` or `NotImplemented`
     /// status codes.
-    pub fn find_handler(&self, request: &Request<Body>) -> HttpResult<Handler> {
+    pub fn find_handler(&self, request: &Request<IncomingBody>) -> HttpResult<Handler> {
         let matching_routes = self.find_matching_routes(request.uri().path());
         match matching_routes.len() {
             x if x == 0 => Err(StatusCode::NOT_FOUND),
@@ -160,7 +161,7 @@ impl Router {
 #[derive(Debug)]
 pub struct RouterService {
     pub router: Router,
-    pub error_handler: fn(StatusCode) -> Response<Body>,
+    pub error_handler: fn(StatusCode) -> Response<Full<Bytes>>,
 }
 
 impl RouterService {
@@ -171,32 +172,33 @@ impl RouterService {
         }
     }
 
-    fn default_error_handler(status_code: StatusCode) -> Response<Body> {
+    fn default_error_handler(status_code: StatusCode) -> Response<Full<Bytes>> {
         let error = "Routing error: page not found";
+        let error_body = Full::new(Bytes::from(error));
+
         Response::builder()
             .header(CONTENT_LENGTH, error.len() as u64)
             .status(match status_code {
                 StatusCode::NOT_FOUND => StatusCode::NOT_FOUND,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             })
-            .body(Body::from(error))
+            .body(error_body)
             .expect("Failed to construct a response")
     }
 }
 
-impl Service<Request<Body>> for RouterService {
-    type Response = Response<Body>;
+impl Service<Request<IncomingBody>> for RouterService {
+    type Response = Response<Full<Bytes>>;
     type Error = hyper::Error;
-    type Future = future::Ready<Result<Self::Response, Self::Error>>;
+    // type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>> + Send>>;
+    type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>> + Send>>;
 
-    fn poll_ready(&mut self, _cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
-        Ok(()).into()
-    }
-
-    fn call(&mut self, request: Request<Body>) -> Self::Future {
-        futures::future::ok(match self.router.find_handler(&request) {
+    fn call(&self, request: Request<IncomingBody>) -> Self::Future {
+        let res = match self.router.find_handler(&request) {
             Ok(handler) => handler(request),
-            Err(status_code) => (self.error_handler)(status_code),
-        })
+            Err(status_code) => Ok((self.error_handler)(status_code)),
+        };
+
+        Box::pin(async { res })
     }
 }

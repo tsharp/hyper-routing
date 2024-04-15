@@ -1,6 +1,6 @@
 [package]
 name = "hyper-routing"
-version = "0.5.0"
+version = "0.7.0"
 authors = ["Travis Sharp <furiousscissors@gmail.com>", "Marcin Radoszewski <moriturius@gmail.com>", "Alexander Mescheryakov <freecoder.xx@gmail.com>"]
 description = "Simple routing middleware for Hyper http library."
 repository = "https://github.com/tsharp/hyper-routing"
@@ -9,16 +9,12 @@ documentation = "https://docs.rs/hyper-routing/latest/hyper_routing/"
 license = "MIT"
 edition = "2021"
 
-#[[bin]]
-#name = "test-server"
-#path = "test-server/main.rs"
-
 [lib]
 name = "hyper_routing"
 path = "src/lib.rs"
 
 [dependencies]
-futures = "^0.3"
-## hyper = { version = "^0.14", features = ["server"] }
-hyper = "^0.14"
-regex = "^1.6"
+hyper = { version = "^1", features = ["full"] }
+tokio = { version = "^1", features = ["full"] }
+http-body-util = "0.1"
+regex = "^1"

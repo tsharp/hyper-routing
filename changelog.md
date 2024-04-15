@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.7.0
+- updated for hyper 1.0
+
+## v0.6.1
+- updated for hyper 0.14
+
 ## v0.5 - hyper-routing
 
 - re-publish library for variant based on hyper-router
