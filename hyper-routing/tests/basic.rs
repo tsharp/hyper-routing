@@ -15,16 +15,16 @@ fn test_get_route() {
 
     fn handle_get_hello(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
     fn handle_get_root(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
     fn handle_get_foo(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
     fn handle_post_hello(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
 
     let router = RouterBuilder::new()
         .add(Route::get("/hello").using(handle_get_hello))
@@ -47,16 +47,16 @@ fn test_post_route() {
 
     fn handle_post_hello(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
     fn handle_post_root(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
     fn handle_post_foo(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
     fn handle_get_hello(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
 
     let router = RouterBuilder::new()
         .add(Route::post("/hello").using(handle_post_hello))
@@ -79,10 +79,10 @@ fn test_delete_route() {
 
     fn handle_delete_hello(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
     fn handle_post_hello(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
 
     let router = RouterBuilder::new()
         .add(Route::delete("/hello").using(handle_delete_hello))
@@ -103,10 +103,11 @@ fn test_options_route() {
 
     fn handle_options_hello(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
+
     fn handle_post_hello(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
 
     let router = RouterBuilder::new()
         .add(Route::options("/hello").using(handle_options_hello))
@@ -127,10 +128,11 @@ fn test_put_route() {
 
     fn handle_put_hello(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
+
     fn handle_post_hello(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
 
     let router = RouterBuilder::new()
         .add(Route::put("/hello").using(handle_put_hello))
@@ -151,10 +153,11 @@ fn test_head_route() {
 
     fn handle_head_hello(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
+
     fn handle_post_hello(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
 
     let router = RouterBuilder::new()
         .add(Route::head("/hello").using(handle_head_hello))
@@ -175,10 +178,11 @@ fn test_trace_route() {
 
     fn handle_trace_hello(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
+
     fn handle_post_hello(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
 
     let router = RouterBuilder::new()
         .add(Route::trace("/hello").using(handle_trace_hello))
@@ -199,10 +203,11 @@ fn test_patch_route() {
 
     fn handle_patch_hello(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
+
     fn handle_post_hello(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
 
     let router = RouterBuilder::new()
         .add(Route::patch("/hello").using(handle_patch_hello))
@@ -223,10 +228,11 @@ fn test_no_route() {
 
     fn handle_get_foo(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
+
     fn handle_get_bar(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
 
     let router = RouterBuilder::new()
         .add(Route::patch("/foo").using(handle_get_foo))
@@ -251,10 +257,10 @@ fn test_regex_path() {
 
     fn handle_regex_foo(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
     fn handle_regex_bar(_: Request<Body>) -> Response<Body> {
         unimplemented!()
-    };
+    }
 
     let router = RouterBuilder::new()
         .add(Route::get(r"/foo/.*?").using(handle_regex_foo))
